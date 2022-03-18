@@ -4,7 +4,7 @@
   justify-content: space-between;
   padding-left: 20px;
   padding-right: 20px;
-  background-color: gray;
+  background-color: white;
 }
 
 #logo {
@@ -25,4 +25,9 @@
 #temp-input {
   height: 30px;
   width: 50%;
+}
+
+.link {
+  color: black;
+  font-size: 18px;
 }

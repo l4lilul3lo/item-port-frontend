@@ -1,9 +1,8 @@
 import { useAxiosWrapper } from "./useAxiosWrapper";
-import { useDispatch } from "react-redux";
-import { storeMessage } from "../features/messageSlice";
+
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const useRegistration = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const axiosWrapper = useAxiosWrapper();
   async function register(username, email, password) {
@@ -12,22 +11,23 @@ const useRegistration = () => {
       email,
       password,
     });
-    dispatch(storeMessage(response.data.message));
-    if (response.status === 200) {
+
+    if (response.status === 201) {
       navigate("/login");
+      toast.success("registration success");
     }
   }
   async function checkUserNameExists(username) {
     const response = await axiosWrapper.post("/checkUsernameExists", {
       username,
     });
-    dispatch(storeMessage(response.data.message));
-    console.log(response);
+
+    return await response.data.message;
   }
 
   async function checkEmailExists(email) {
     const response = await axiosWrapper.post("/checkEmailExists", { email });
-    dispatch(storeMessage(response.data.message));
+    return await response.data.message;
   }
 
   return {

@@ -1,0 +1,25 @@
+img {
+  width: 20%;
+  height: auto;
+}
+
+#products-container {
+  display: flex;
+  width: 90%;
+  margin: auto;
+
+  flex-wrap: wrap;
+}
+
+#product-container {
+  border-radius: 5px;
+  width: 20%;
+}
+
+h1 {
+  color: white;
+}
+
+p {
+  color: white;
+}

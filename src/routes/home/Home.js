@@ -1,22 +1,13 @@
-import { Nav } from "../../components/nav/Nav";
+import Nav from "../../components/nav/Nav";
 import { selectIsAuth } from "../../features/userSlice";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import "./home.css";
+
 const Home = () => {
-  const isAuth = useSelector(selectIsAuth);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuth) {
-      navigate("/dashboard");
-    }
-  });
-  return (
-    <>
-      <Nav />
-      <h1>HOMEPAGE</h1>
-    </>
-  );
+  return <h1>Homepage</h1>;
 };
 
 export default Home;

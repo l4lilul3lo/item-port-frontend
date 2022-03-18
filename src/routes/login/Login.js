@@ -1,52 +1,39 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
-import { useDispatch } from "react-redux";
-import { deauthorize, authorize } from "../../features/userSlice";
-import { useGetMessage } from "../../hooks/useGetMessage";
+import { selectIsAuth } from "../../features/userSlice";
+
+import { useSelector } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
 const Login = () => {
+  useEffect(() => {
+    return () => {
+      setInputs({});
+    };
+  }, []);
   const user = useUser();
-  const message = useGetMessage();
 
-  const dispatch = useDispatch();
-  dispatch(deauthorize());
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
+    message: "",
   });
 
-  const { email, password } = inputs;
-
   const onChange = (e) => {
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
+    setInputs({ ...inputs, [e.target.name]: e.target.value, message: "" });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { email, password } = inputs;
     const body = { email, password };
-    console.log(body);
-    user.login(email, password);
-    // Put a toast call here with a render condition of a message in the store.
-    // have use selector's value be the result of a function
-    // try {
-    //   const response = await fetch("http://localhost:4000/login", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     credentials: "include",
-    //     body: JSON.stringify(body),
-    //   });
-
-    //   if (response.status === 200) {
-    //     dispatch(authorize());
-    //     navigate("/");
-    //   }
-    // } catch (error) {}
+    let message = await user.login(email, password);
+    setInputs({ ...inputs, message: message });
   };
+
   return (
     <div id="login-container">
-      <form id="login-form" onSubmit={handleSubmit}>
+      <form id="login-form" onSubmit={handleSubmit} autoComplete="off">
         <input
           type="email"
           placeholder="Email"
@@ -62,8 +49,8 @@ const Login = () => {
           className="input"
           onChange={(e) => onChange(e)}
         ></input>
-
-        <button type="submit" id="registerbtn">
+        <div className="message">{inputs.message}</div>
+        <button type="submit" id="loginbtn">
           Login
         </button>
       </form>
@@ -71,9 +58,4 @@ const Login = () => {
   );
 };
 
-// to do:
-// set up user dashboard to display username, and user image.
-// allow user to upload an image using multer, and store the image in cloudinary, while storing the image_url and id in the database. Then return the image_url to the user in a response store it in the user state object. Subsequent requests will get user_image from cloudinary.
-
-//implement manual logout.
 export default Login;

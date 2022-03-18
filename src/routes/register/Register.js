@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import validator from "validator";
 import PasswordStrengthBar from "react-password-strength-bar";
 import { useRegistration } from "../../hooks/useRegistration";
-import { selectMessage } from "../../features/messageSlice";
-import { useSelector } from "react-redux";
+import logo from "../../images/logo.png";
 import "./register.css";
+
 const Register = () => {
-  const navigate = useNavigate();
   const registration = useRegistration();
-  const message = useSelector(selectMessage);
 
   const [inputs, setInputs] = useState({
     username: {
@@ -53,50 +50,54 @@ const Register = () => {
     password2: () => validatePassword2(),
   };
 
-  const validateUserName = () => {
+  const validateUserName = async () => {
     const username = inputs.username.value;
+    const isValid = inputs.username.isValid;
     const inputName = "username";
+
     if (username.length < 3 || username.length > 15) {
       const message = "Username must be between 3 and 15 characters";
-
       invalidate(inputName, message);
-      // setInputs({
-      //   ...inputs,
-      //   username: {
-      //     isValid: false,
-      //     message: "Username must be between 3 and 15 characters",
-      //   },
-      // });
       return;
     }
 
     if (!username[0].match(/[a-z]/i)) {
       const message = "Username must start with a letter";
       invalidate(inputName, message);
+      return;
     }
 
     if (username.match(/[^a-zA-Z0-9_]/)) {
-      setInputs({
-        ...inputs,
-        username: {
-          isValid: false,
-          message:
-            "Username can only contain letters, numbers, and underscores",
-        },
-      });
+      const message =
+        "Username can only contain letters, numbers, and underscores";
+      invalidate(inputName, message);
+      return;
+    }
+
+    if (username && isValid) {
+      const message = await registration.checkUserNameExists(username);
+      if (message !== "Available") {
+        invalidate(inputName, message);
+      }
     }
   };
 
-  const validateEmail = () => {
+  const validateEmail = async () => {
     const email = inputs.email.value;
+    const isValid = inputs.email.isValid;
+    const inputName = "email";
+
     if (!validator.isEmail(email)) {
-      setInputs({
-        ...inputs,
-        email: {
-          isValid: false,
-          message: "Please enter a valid email address",
-        },
-      });
+      const message = "Please enter a valid email address";
+      invalidate(inputName, message);
+      return;
+    }
+
+    if (email && isValid) {
+      const message = await registration.checkEmailExists(email);
+      if (message !== "Available") {
+        invalidate(inputName, message);
+      }
     }
   };
   // // lets think state
@@ -132,8 +133,7 @@ const Register = () => {
     }
   };
 
-  const checkValidation = () => {
-    console.log(inputs);
+  const isAllValid = () => {
     for (let key in inputs) {
       let { value, isValid } = inputs[key];
 
@@ -143,8 +143,6 @@ const Register = () => {
     }
     return true;
   };
-
-  const { username, email, password } = inputs;
 
   const onChange = (e) => {
     setInputs({
@@ -158,40 +156,27 @@ const Register = () => {
     if (e.target.value) {
       validate[e.target.name]();
     }
-    if (inputs.username.isValid && inputs.username.value) {
-      registration.checkUserNameExists(inputs.username.value);
-    }
-
-    if (inputs.email.isValid && inputs.email.value) {
-      registration.checkEmailExists(inputs.email.value);
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (checkValidation()) {
+    if (!isAllValid()) {
       return;
     }
+    const username = inputs.username.value;
+    const email = inputs.email.value;
+    const password = inputs.password.value;
     const body = { username, email, password };
 
     try {
-      const response = await fetch("http://localhost:4000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const parseRes = await response.json();
-      console.log(parseRes);
-      if (parseRes.message === "register success") {
-        console.log(parseRes);
-        navigate("/login");
-      }
+      registration.register(username, email, password);
     } catch (error) {}
   };
+
   return (
     <div id="register-container">
+      <img src={logo} />
       <form id="register-form" onSubmit={handleSubmit} autoComplete="off">
         <div className="input-container">
           <input
@@ -205,10 +190,7 @@ const Register = () => {
             onBlur={(e) => handleBlur(e)}
           ></input>
         </div>
-        <div className="message">
-          {inputs.username.message}
-          {message}
-        </div>
+        <div className="message">{inputs.username.message}</div>
         <div className="input-container">
           <input
             type="email"

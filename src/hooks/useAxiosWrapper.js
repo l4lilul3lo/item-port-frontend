@@ -1,13 +1,10 @@
-import { deauthorize } from "../features/userSlice";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { mainAxios } from "../config/axiosConfig";
-
+import { useDispatch } from "react-redux";
+import { deauthorize } from "../features/userSlice";
 // Wrapping axios allows us to write queries without having to worry about handling authentication. If the server returns 401, the user is logged out. Otherwise, return the data.
 
 function useAxiosWrapper() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   return {
     get: request("GET"),
     post: request("POST"),
@@ -20,24 +17,31 @@ function useAxiosWrapper() {
         const config = {
           method,
         };
-        console.log(`data ${JSON.stringify(body)}`);
-        console.log(`url ${url}`);
+
         if (body) {
           config.data = body;
         }
         let response = await mainAxios(url, config).catch((err) => {
-          if (err.response.status === 401) {
-            dispatch(deauthorize());
-            navigate("/login");
-          }
+          console.log(`err ${err}`);
+          return err.response;
         });
 
+        // if the status is is bad, we will return the message of the error response.
+        if (response.status === 401) {
+          dispatch(deauthorize());
+        }
+        console.log(`response ${JSON.stringify(response)}`);
+        // otherwise we will return the data from the response.
         return response;
       } catch (err) {
-        console.log(err.status);
+        console.log(err);
       }
     };
   }
 }
 
 export { useAxiosWrapper };
+
+// Axios wrapper calls navigate on error.
+
+// Move navigate to protected route

@@ -6,50 +6,46 @@ import { useSelector } from "react-redux";
 import { selectIsAuth, selectUserInfo } from "../../features/userSlice";
 import { useUser } from "../../hooks/useUser";
 import { useQuery } from "react-query";
+import { useRef } from "react";
 
-export const Nav = () => {
+const Nav = () => {
+  const renderCounter = useRef(0);
+  renderCounter.current = renderCounter.current + 1;
   const userInfo = useSelector(selectUserInfo);
-  const isAuth = useSelector(selectIsAuth);
+  console.log(`userinfo ${JSON.stringify(userInfo)}`);
   const user = useUser();
-  console.log(` userInfo ${userInfo}`);
-
-  // Now use react-query for getUser.
-  const { isLoading, error } = useQuery(
-    "getUserInfo",
-    () => {
-      return user.getUserInfo();
-    },
-    // if there is no user_name, and the user is authenticated, get userinfo.
-    { enabled: isAuth && !userInfo.user_name }
-  );
   const handleLogout = () => {
     user.logout();
   };
 
-  if (isLoading) return <h1>loading</h1>;
-
   return (
     <div id="nav">
+      <h1 style={{ color: "black" }}>{renderCounter.current}</h1>
       <img id="logo" src={logo} alt="Item Port Logo"></img>
-      {isAuth && (
+      {userInfo.username && (
         <>
           <img
             id="user-image"
-            src={userInfo.user_image ? userInfo.userImage : defaultUserImage}
+            src={userInfo.image ? userInfo.image : defaultUserImage}
             alt="User Image"
           />
-          <h4>{userInfo.user_name}</h4>
+          <h4>{userInfo.username}</h4>
         </>
       )}
       <input id="temp-input" type="text"></input>
       <div id="links">
-        {!isAuth && (
+        {!userInfo.username && (
           <>
-            <Link to="/register">Register</Link> |{" "}
-            <Link to="/login">Login</Link>
+            <Link className="link" to="/register">
+              Register
+            </Link>{" "}
+            |{" "}
+            <Link className="link" to="/login">
+              Login
+            </Link>
           </>
         )}
-        {isAuth && (
+        {userInfo.username && (
           <>
             <Link to="/account">Account</Link> |{" "}
             <button onClick={handleLogout}>Logout</button>
@@ -60,4 +56,5 @@ export const Nav = () => {
   );
 };
 
-// How about this now, nav is not necessarily a protected route but we can use protected route logic within it.
+// How about this now. Nav should not make requests every time a user visits the page. We need to find a way to check for
+export default Nav;

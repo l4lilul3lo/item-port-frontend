@@ -2,6 +2,7 @@ import { useAxiosWrapper } from "./useAxiosWrapper";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { authorize, deauthorize, storeUser } from "../features/userSlice";
+import { toast } from "react-toastify";
 
 // a user hook allows us to use other hooks outside of a react functional component.
 // This way we can dispatch authorize to the store when the user logs in, among other things.
@@ -22,22 +23,32 @@ function useUser() {
     const response = await axiosWrapper.post("/login", { email, password });
 
     if (response.status === 200) {
-      dispatch(storeUser(response.data.user));
       dispatch(authorize());
+      console.log(`login response ${JSON.stringify(response.data)}`);
+      dispatch(storeUser(response.data.user));
       navigate("/dashboard");
+      toast.success("Login Success!");
+      return;
     }
+    console.log(`response in login function ${JSON.stringify(response)}`);
+    return response.data.message;
   }
 
-  function logout() {
-    axiosWrapper.post("/logout");
+  async function logout() {
+    const response = axiosWrapper.post("/logout");
     dispatch(deauthorize());
     navigate("/");
+    toast.success("You've been logged out");
+    return response;
   }
 
   async function isAuth() {
     const response = await axiosWrapper.get("/isAuthenticated");
+    console.log(`isAuth ${response}`);
     if (response.status === 200) {
       dispatch(authorize());
+    } else {
+      dispatch(deauthorize());
     }
   }
 
