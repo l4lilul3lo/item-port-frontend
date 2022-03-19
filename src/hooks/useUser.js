@@ -15,7 +15,7 @@ function useUser() {
     login,
     logout,
     isAuth,
-    getUserInfo,
+    getUserData,
   };
   async function login(email, password) {
     console.log(email, password);
@@ -24,13 +24,10 @@ function useUser() {
 
     if (response.status === 200) {
       dispatch(authorize());
-      console.log(`login response ${JSON.stringify(response.data)}`);
-      dispatch(storeUser(response.data.user));
       navigate("/dashboard");
       toast.success("Login Success!");
       return;
     }
-    console.log(`response in login function ${JSON.stringify(response)}`);
     return response.data.message;
   }
 
@@ -47,16 +44,12 @@ function useUser() {
     console.log(`isAuth ${response}`);
     if (response.status === 200) {
       dispatch(authorize());
-    } else {
-      dispatch(deauthorize());
     }
   }
 
-  async function getUserInfo() {
-    const response = await axiosWrapper.get("/getUserInfo");
-    if (response.status === 200) {
-      dispatch(storeUser(response.data.user));
-    }
+  async function getUserData() {
+    //
+    return axiosWrapper.get("/getUserData");
   }
 }
 

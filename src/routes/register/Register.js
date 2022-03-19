@@ -176,7 +176,7 @@ const Register = () => {
 
   return (
     <div id="register-container">
-      <img src={logo} />
+      <img id="register-logo" src={logo} />
       <form id="register-form" onSubmit={handleSubmit} autoComplete="off">
         <div className="input-container">
           <input
@@ -190,7 +190,7 @@ const Register = () => {
             onBlur={(e) => handleBlur(e)}
           ></input>
         </div>
-        <div className="message">{inputs.username.message}</div>
+        <div className="messages">{inputs.username.message}</div>
         <div className="input-container">
           <input
             type="email"
@@ -200,7 +200,7 @@ const Register = () => {
             onChange={(e) => onChange(e)}
             onBlur={(e) => handleBlur(e)}
           ></input>
-          <div className="message">{inputs.email.message}</div>
+          <div className="messages">{inputs.email.message}</div>
         </div>
 
         <div className="input-container">
@@ -215,7 +215,7 @@ const Register = () => {
             onBlur={(e) => handleBlur(e)}
           ></input>
 
-          <div className="message">{inputs.password.message}</div>
+          <div className="messages">{inputs.password.message}</div>
 
           <PasswordStrengthBar
             scoreWordStyle={{ fontSize: "17px" }}
@@ -236,7 +236,7 @@ const Register = () => {
             onChange={(e) => onChange(e)}
             onBlur={(e) => handleBlur(e)}
           ></input>
-          <div className="message">{inputs.password2.message}</div>
+          <div className="messages">{inputs.password2.message}</div>
         </div>
 
         <button type="submit" id="registerbtn">

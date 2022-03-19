@@ -9,6 +9,7 @@ import { selectIsAuth } from "./features/userSlice";
 import Home from "./routes/home/Home";
 import Loading from "./components/loading/Loading";
 import PageLayout from "./components/pagelayout/PageLayout";
+import "bulma/css/bulma.min.css";
 const Login = React.lazy(() => import("./routes/login/Login"));
 const Register = React.lazy(() => import("./routes/register/Register"));
 const Dashboard = React.lazy(() => import("./routes/dashboard/Dashboard"));
@@ -37,14 +38,7 @@ function App() {
             <Route element={<PageLayout />}>
               <Route path="/home" element={<Home />} />
 
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -56,5 +50,3 @@ function App() {
 }
 
 export default App;
-
-// app renders and path relocate is matched. and then initial Auth is called. Relocate depends on it so it re-renders relocate.

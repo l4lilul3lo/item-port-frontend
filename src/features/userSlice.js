@@ -21,7 +21,7 @@ export const userSlice = createSlice({
     },
 
     deauthorize: (state) => {
-      localStorage.setItem("isAuth", "false");
+      localStorage.clear();
       state.isAuth = false;
       state.userInfo = {};
     },

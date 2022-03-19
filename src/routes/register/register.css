@@ -1,7 +1,6 @@
 #register-container {
   background-color: #15171e;
-  width: 100vw;
-  height: 100vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,13 +54,13 @@
   color: white;
 }
 
-.message {
+.messages {
   height: 20px;
   white-space: nowrap;
   color: white;
 }
 
-img {
+#register-logo {
   color: white;
   margin-bottom: 80px;
 }

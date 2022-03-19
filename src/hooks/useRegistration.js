@@ -38,3 +38,4 @@ const useRegistration = () => {
 };
 
 export { useRegistration };
+// make all navigation be done from hooks. this will avoid any confusion...maybe

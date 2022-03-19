@@ -7,7 +7,12 @@ import { useQuery } from "react-query";
 import "./home.css";
 
 const Home = () => {
-  return <h1>Homepage</h1>;
+  return (
+    <>
+      <Nav />
+      <h1>Homepage</h1>
+    </>
+  );
 };
 
 export default Home;

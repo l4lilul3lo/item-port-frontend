@@ -50,7 +50,7 @@ const Login = () => {
           onChange={(e) => onChange(e)}
         ></input>
         <div className="message">{inputs.message}</div>
-        <button type="submit" id="loginbtn">
+        <button type="submit" className="button is-primary is-large">
           Login
         </button>
       </form>
