@@ -1,12 +1,13 @@
 import { useState } from "react";
 import validator from "validator";
 import PasswordStrengthBar from "react-password-strength-bar";
-import { useRegistration } from "../../hooks/useRegistration";
-import logo from "../../images/logo.png";
-import "./register.css";
+import { useRegistration } from "../hooks/useRegistration";
+import { Container, Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const registration = useRegistration();
+  const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
     username: {
@@ -158,6 +159,10 @@ const Register = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -175,75 +180,87 @@ const Register = () => {
   };
 
   return (
-    <div id="register-container">
-      <img id="register-logo" src={logo} />
-      <form id="register-form" onSubmit={handleSubmit} autoComplete="off">
-        <div className="input-container">
-          <input
+    <Container className="h-100 d-flex  align-items-center justify-content-center ">
+      <Form className="text-center w-50" onSubmit={handleSubmit}>
+        <div id="name-logo">
+          <h3>Item</h3>
+          <i
+            className="bi bi-phone-flip"
+            style={{
+              fontSize: 100,
+              color: "blue",
+              "margin-left": "10px",
+              "margin-right": "10px",
+            }}
+          />
+          <h3>Port</h3>
+        </div>
+        <h3>Register</h3>
+        <Form.Group className="mb-3" controlId="formBasicText">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
             type="text"
-            placeholder="Username"
             name="username"
-            className={
-              inputs.username.isValid ? "input valid" : "input invalid"
-            }
+            placeholder="Enter username"
             onChange={(e) => onChange(e)}
             onBlur={(e) => handleBlur(e)}
-          ></input>
-        </div>
-        <div className="messages">{inputs.username.message}</div>
-        <div className="input-container">
-          <input
+          />
+          <Form.Text className="text-muted">
+            {inputs.username.message}
+          </Form.Text>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
             type="email"
-            placeholder="Email"
             name="email"
-            className={inputs.email.isValid ? "input valid" : "input invalid"}
+            placeholder="Enter email"
             onChange={(e) => onChange(e)}
             onBlur={(e) => handleBlur(e)}
-          ></input>
-          <div className="messages">{inputs.email.message}</div>
-        </div>
-
-        <div className="input-container">
-          <input
+          />
+          <Form.Text className="text-muted">{inputs.email.message}</Form.Text>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             type="password"
-            placeholder="Password"
             name="password"
-            className={
-              inputs.password.isValid ? "input valid" : "input invalid"
-            }
+            placeholder="Enter password"
             onChange={(e) => onChange(e)}
             onBlur={(e) => handleBlur(e)}
-          ></input>
-
-          <div className="messages">{inputs.password.message}</div>
-
+          />
+          <Form.Text className="text-muted">
+            {inputs.password.message}
+          </Form.Text>
           <PasswordStrengthBar
+            style={{ "margin-top": "30px" }}
             scoreWordStyle={{ fontSize: "17px" }}
             barColors={["#999999", "#ef4836", "#f6b44d", "#2b90ef", "#25c281"]}
             minLength={6}
             password={inputs.password.value}
           />
-        </div>
-
-        <div className="input-container">
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicPassword2">
+          <Form.Label>Confirm password</Form.Label>
+          <Form.Control
             type="password"
-            placeholder="Confirm Password"
             name="password2"
-            className={
-              inputs.password2.isValid ? "input valid" : "input invalid"
-            }
+            placeholder="Enter password"
             onChange={(e) => onChange(e)}
             onBlur={(e) => handleBlur(e)}
-          ></input>
-          <div className="messages">{inputs.password2.message}</div>
-        </div>
-
-        <button type="submit" id="registerbtn">
-          Register
-        </button>
-      </form>
-    </div>
+          />
+          <Form.Text className="text-muted">
+            {inputs.password2.message}
+          </Form.Text>
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>{" "}
+        <Button variant="secondary" type="button" onClick={handleCancel}>
+          Cancel
+        </Button>
+      </Form>
+    </Container>
   );
 };
 

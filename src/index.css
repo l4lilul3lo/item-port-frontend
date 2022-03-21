@@ -5,6 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  display: grid;
+}
+
+html {
+  height: 100vh;
 }
 
 code {
@@ -12,6 +18,4 @@ code {
     monospace;
 }
 
-html {
-  background-color: #15171e;
-}
+@import "bootstrap/dist/css/bootstrap.min.css";

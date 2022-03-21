@@ -1,19 +1,31 @@
 import Nav from "../nav/Nav";
 import { Outlet } from "react-router-dom";
 import { useQuery } from "react-query";
+import { useState } from "react";
 import Loading from "../loading/Loading";
 const PageLayout = () => {
+  const [s, setS] = useState(true);
   function createGroups(arr, numGroups) {
     const perGroup = Math.ceil(arr.length / numGroups);
     return new Array(numGroups)
       .fill("")
       .map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup));
   }
-  const { isLoading, isError, data } = useQuery("getAllProducts", () =>
-    fetch("http://localhost:4000/allProducts").then((res) => res.json())
+  const { isLoading, isError, data } = useQuery(
+    "getAllProducts",
+    () => fetch("http://localhost:4000/allProducts").then((res) => res.json()),
+    { retry: 1 }
   );
 
   if (isLoading) return <h1>Loading product data...</h1>;
+
+  if (isError)
+    return (
+      <>
+        <Outlet />
+        <h1>Something went wrong</h1>
+      </>
+    );
   return (
     <>
       <Outlet />
@@ -77,6 +89,7 @@ const PageLayout = () => {
         })}
       </div> */}
       <div className="container">
+        <button onClick={() => setS(!s)}>click me</button>
         <div className="columns is-multiline">
           {data.map((x) => {
             return (

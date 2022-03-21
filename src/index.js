@@ -7,6 +7,8 @@ import { store } from "./store";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "react-query";
 import "./index.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+
 const queryClient = new QueryClient();
 
 ReactDOM.render(

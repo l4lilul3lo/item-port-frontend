@@ -24,7 +24,7 @@ function useUser() {
 
     if (response.status === 200) {
       dispatch(authorize());
-      navigate("/dashboard");
+      navigate("/");
       toast.success("Login Success!");
       return;
     }
@@ -34,7 +34,7 @@ function useUser() {
   async function logout() {
     const response = axiosWrapper.post("/logout");
     dispatch(deauthorize());
-    navigate("/");
+
     toast.success("You've been logged out");
     return response;
   }
@@ -51,6 +51,8 @@ function useUser() {
     //
     return axiosWrapper.get("/getUserData");
   }
+
+  // user logs in and they get their cart data. data should be stale until it's ready.
 }
 
 export { useUser };

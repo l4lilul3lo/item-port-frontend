@@ -1,27 +1,21 @@
-import "./App.css";
-import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
-import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-
-import { selectIsAuth } from "./features/userSlice";
-
-import Home from "./routes/home/Home";
+import Home from "./routes/home";
 import Loading from "./components/loading/Loading";
-import PageLayout from "./components/pagelayout/PageLayout";
-import "bulma/css/bulma.min.css";
-const Login = React.lazy(() => import("./routes/login/Login"));
-const Register = React.lazy(() => import("./routes/register/Register"));
-const Dashboard = React.lazy(() => import("./routes/dashboard/Dashboard"));
-const ProtectedRoute = React.lazy(() =>
-  import("./routes/protectedroute/ProtectedRoute")
-);
-// const Dashboard = React.lazy(() => import("./routes/dashboard/Dashboard"));
+import AuthNav from "./components/nav/AuthNav";
+import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
+
+const Login = React.lazy(() => import("./routes/login"));
+const Register = React.lazy(() => import("./routes/register"));
+const Account = React.lazy(() => import("./routes/account"));
+const Product = React.lazy(() => import("./routes/product"));
+const Cart = React.lazy(() => import("./routes/cart"));
+
 document.querySelector(".loader-container").style.display = "none";
 
 function App() {
-  const isAuth = useSelector(selectIsAuth);
-
   //Okay so if we have isAuth in local storage we don't need to do this here. It will be true Then dashboard will render on use and should make a react query call for isAuth and load in the mean time, when the data is ready it will either render the child component or navigate to home.
   return (
     <div className="App">
@@ -29,19 +23,15 @@ function App() {
         <ToastContainer position="bottom-left" pauseOnFocusLoss={false} />
         <Suspense fallback={<Loading />}>
           <Routes>
-            <Route
-              path="/"
-              element={
-                isAuth ? <Navigate to="/dashboard" /> : <Navigate to="/home" />
-              }
-            />
-            <Route element={<PageLayout />}>
-              <Route path="/home" element={<Home />} />
-
-              <Route path="/dashboard" element={<Dashboard />} />
+            <Route element={<AuthNav />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/product/:id" element={<Product />} />
             </Route>
+
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
@@ -50,3 +40,9 @@ function App() {
 }
 
 export default App;
+
+// simplify this now or suffer...
+// have a single element that displays a conditional navbar component and a products component. This way only one is updated when it needs to be and not the whole damn thing.
+// have Nav bar simply be conditionally rendered based on auth status.
+
+// Path "/" is simply home element. If we listen for auth in the home element, the whole thing will re-render on auth. so we need an authnav that checks for auth instead and renders public nav or private nav appropriately.
