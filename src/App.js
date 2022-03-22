@@ -26,12 +26,12 @@ function App() {
             <Route element={<AuthNav />}>
               <Route path="/" element={<Home />} />
               <Route path="/product/:id" element={<Product />} />
+              <Route path="/cart" element={<Cart />} />
             </Route>
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/cart" element={<Cart />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

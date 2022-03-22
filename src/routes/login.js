@@ -38,8 +38,8 @@ const Login = () => {
             style={{
               fontSize: 100,
               color: "blue",
-              "margin-left": "10px",
-              "margin-right": "10px",
+              marginLeft: "10px",
+              marginRight: "10px",
             }}
           />
           <h3>Port</h3>

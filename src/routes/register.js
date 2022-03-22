@@ -189,8 +189,8 @@ const Register = () => {
             style={{
               fontSize: 100,
               color: "blue",
-              "margin-left": "10px",
-              "margin-right": "10px",
+              marginLeft: "10px",
+              marginRight: "10px",
             }}
           />
           <h3>Port</h3>
@@ -233,7 +233,7 @@ const Register = () => {
             {inputs.password.message}
           </Form.Text>
           <PasswordStrengthBar
-            style={{ "margin-top": "30px" }}
+            style={{ marginTop: "30px" }}
             scoreWordStyle={{ fontSize: "17px" }}
             barColors={["#999999", "#ef4836", "#f6b44d", "#2b90ef", "#25c281"]}
             minLength={6}

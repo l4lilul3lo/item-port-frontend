@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../features/cartSlice";
 import { Container, Button } from "react-bootstrap";
+import { toast } from "react-toastify";
 const Product = () => {
   const { getProduct } = useProducts();
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const Product = () => {
   console.log(location);
   const handleClick = (item) => {
     dispatch(addToCart(item));
+    toast.success("Item added to cart");
   };
   const { isLoading, isError, data } = useQuery("getProduct", async () => {
     return getProduct(productId);
@@ -25,13 +27,14 @@ const Product = () => {
   if (isLoading) return <h1>loading</h1>;
 
   const product = data.data;
-
+  const productInfo = product.info;
+  console.log(`FUCK ${JSON.stringify(data)}`);
   return (
     <Container className="d-flex flex-column justify-content-center align-items-center">
-      <h1>{product.title}</h1>
-      <img src={product.image} style={{ width: "256px" }} />
+      <h1>{productInfo.title}</h1>
+      <img src={productInfo.image} style={{ width: "256px" }} />
       <div id="product-description">
-        <h4>{product.description}</h4>
+        <h4>{productInfo.description}</h4>
       </div>
       <Button
         variant="primary"

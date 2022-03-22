@@ -57,6 +57,9 @@ const PrivateNav = () => {
           </Nav>
         </Navbar.Collapse>
       </Container>
+      <Container>
+        <h1>hello</h1>
+      </Container>
     </Navbar>
   );
 };

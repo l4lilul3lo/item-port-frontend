@@ -70,15 +70,19 @@
   color: red;
 }
 
-.product-card:hover {
-  box-shadow: 2px 2px 2px #0088ca;
-}
-
 #side-content {
-  height: 100%;
+  background-color: blue;
 }
 
 #product-description {
   width: 50%;
   text-align: center;
+}
+
+#product-card {
+  cursor: pointer;
+}
+
+#product-card:hover {
+  box-shadow: 2px 2px 2px #0088ca;
 }

@@ -18,4 +18,8 @@ code {
     monospace;
 }
 
+.form-control:focus {
+  box-shadow: none;
+}
+
 @import "bootstrap/dist/css/bootstrap.min.css";
