@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 const Products = () => {

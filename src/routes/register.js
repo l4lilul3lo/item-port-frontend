@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import validator from "validator";
 import PasswordStrengthBar from "react-password-strength-bar";
 import { useRegistration } from "../hooks/useRegistration";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const registration = useRegistration();
   const navigate = useNavigate();
-
-  const [inputs, setInputs] = useState({
+  const dispatch = useDispatch();
+  // create a listener here for an html string to be stored in state.
+  const initialInputsState = {
     username: {
       value: "",
       isValid: true,
@@ -30,7 +32,15 @@ const Register = () => {
       isValid: true,
       message: "",
     },
-  });
+  };
+
+  const [inputs, setInputs] = useState(initialInputsState);
+
+  const [verifyMethod, setVerifyMethod] = useState("on-site");
+
+  useEffect(() => {
+    return () => setInputs(initialInputsState);
+  }, []);
 
   const invalidate = (inputName, message) => {
     console.log(inputs["username"].value);
@@ -74,13 +84,6 @@ const Register = () => {
       invalidate(inputName, message);
       return;
     }
-
-    if (username && isValid) {
-      const message = await registration.checkUserNameExists(username);
-      if (message !== "Available") {
-        invalidate(inputName, message);
-      }
-    }
   };
 
   const validateEmail = async () => {
@@ -92,13 +95,6 @@ const Register = () => {
       const message = "Please enter a valid email address";
       invalidate(inputName, message);
       return;
-    }
-
-    if (email && isValid) {
-      const message = await registration.checkEmailExists(email);
-      if (message !== "Available") {
-        invalidate(inputName, message);
-      }
     }
   };
   // // lets think state
@@ -152,6 +148,18 @@ const Register = () => {
     });
   };
 
+  const handleRadioChange = (e) => {
+    const id = e.target.id;
+    console.log(id);
+    if (id === "email-radio") {
+      setVerifyMethod("email");
+    }
+
+    if (id === "site-radio") {
+      setVerifyMethod("on-site");
+    }
+  };
+
   // When the user navigates away from input, check for validation.
   const handleBlur = (e) => {
     if (e.target.value) {
@@ -165,101 +173,170 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!isAllValid()) {
       return;
     }
     const username = inputs.username.value;
     const email = inputs.email.value;
     const password = inputs.password.value;
-    const body = { username, email, password };
+    const body = {
+      username: username,
+      email: email,
+      password: password,
+      verifyMethod: verifyMethod,
+    };
+    console.log(`register body ${JSON.stringify(body)}`);
 
     try {
-      registration.register(username, email, password);
-    } catch (error) {}
+      // if all is good, send registration request.
+      const response = await registration.register(body);
+      console.log(response);
+      setInputs(initialInputsState);
+      if (verifyMethod === "on-site") {
+        document.querySelector("#email-icon").style.display = "flex";
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+      }
+
+      // dispatch html to store. navigate to email page.
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <Container className="h-100 d-flex  align-items-center justify-content-center ">
-      <Form className="text-center w-50" onSubmit={handleSubmit}>
-        <div id="name-logo">
-          <h3>Item</h3>
+    <Container>
+      <div id="email-icon-container">
+        <div id="email-icon" onClick={() => navigate("/email")}>
+          <h4> {"Verify your email address ->"}</h4>
+
           <i
-            className="bi bi-phone-flip"
-            style={{
-              fontSize: 100,
-              color: "blue",
-              marginLeft: "10px",
-              marginRight: "10px",
-            }}
-          />
-          <h3>Port</h3>
+            className="bi bi-envelope-exclamation"
+            style={{ fontSize: 30, marginLeft: "5px" }}
+          ></i>
         </div>
-        <h3>Register</h3>
-        <Form.Group className="mb-3" controlId="formBasicText">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            name="username"
-            placeholder="Enter username"
-            onChange={(e) => onChange(e)}
-            onBlur={(e) => handleBlur(e)}
-          />
-          <Form.Text className="text-muted">
-            {inputs.username.message}
-          </Form.Text>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            onChange={(e) => onChange(e)}
-            onBlur={(e) => handleBlur(e)}
-          />
-          <Form.Text className="text-muted">{inputs.email.message}</Form.Text>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            onChange={(e) => onChange(e)}
-            onBlur={(e) => handleBlur(e)}
-          />
-          <Form.Text className="text-muted">
-            {inputs.password.message}
-          </Form.Text>
-          <PasswordStrengthBar
-            style={{ marginTop: "30px" }}
-            scoreWordStyle={{ fontSize: "17px" }}
-            barColors={["#999999", "#ef4836", "#f6b44d", "#2b90ef", "#25c281"]}
-            minLength={6}
-            password={inputs.password.value}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword2">
-          <Form.Label>Confirm password</Form.Label>
-          <Form.Control
-            type="password"
-            name="password2"
-            placeholder="Enter password"
-            onChange={(e) => onChange(e)}
-            onBlur={(e) => handleBlur(e)}
-          />
-          <Form.Text className="text-muted">
-            {inputs.password2.message}
-          </Form.Text>
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>{" "}
-        <Button variant="secondary" type="button" onClick={handleCancel}>
-          Cancel
-        </Button>
-      </Form>
+      </div>
+      <Container className="h-100 d-flex  align-items-center justify-content-center ">
+        <Form className="text-center w-50" onSubmit={handleSubmit}>
+          <div id="name-logo">
+            <h3>Item</h3>
+            <i
+              className="bi bi-phone-flip"
+              style={{
+                fontSize: 100,
+                color: "blue",
+                marginLeft: "10px",
+                marginRight: "10px",
+              }}
+            />
+            <h3>Port</h3>
+          </div>
+          <h3>Register</h3>
+          <Form.Group className="mb-3" controlId="formBasicText">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              name="username"
+              value={inputs.username.value}
+              placeholder="Enter username"
+              onChange={(e) => onChange(e)}
+              onBlur={(e) => handleBlur(e)}
+            />
+            <Form.Text className="text-muted">
+              {inputs.username.message}
+            </Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={inputs.email.value}
+              placeholder="Enter email"
+              onChange={(e) => onChange(e)}
+              onBlur={(e) => handleBlur(e)}
+            />
+            <Form.Text className="text-muted">{inputs.email.message}</Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              value={inputs.password.value}
+              placeholder="Enter password"
+              onChange={(e) => onChange(e)}
+              onBlur={(e) => handleBlur(e)}
+            />
+            <Form.Text className="text-muted">
+              {inputs.password.message}
+            </Form.Text>
+            <PasswordStrengthBar
+              style={{ marginTop: "30px" }}
+              scoreWordStyle={{ fontSize: "17px" }}
+              barColors={[
+                "#999999",
+                "#ef4836",
+                "#f6b44d",
+                "#2b90ef",
+                "#25c281",
+              ]}
+              minLength={6}
+              password={inputs.password.value}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPassword2">
+            <Form.Label>Confirm password</Form.Label>
+            <Form.Control
+              type="password"
+              name="password2"
+              value={inputs.password2.value}
+              placeholder="Enter password"
+              onChange={(e) => onChange(e)}
+              onBlur={(e) => handleBlur(e)}
+            />
+            <Form.Text className="text-muted">
+              {inputs.password2.message}
+            </Form.Text>
+          </Form.Group>
+          <div>
+            <Form.Check
+              inline
+              label="verify account here on website for convenient demo purposes"
+              name="group1"
+              type="radio"
+              id="site-radio"
+              checked={verifyMethod === "on-site" ? true : false}
+              onChange={(e) => handleRadioChange(e)}
+            />
+            <Form.Check
+              inline
+              className="mt-3"
+              label="verify account with email address"
+              name="group1"
+              type="radio"
+              id="email-radio"
+              checked={verifyMethod === "email" ? true : false}
+              onChange={(e) => handleRadioChange(e)}
+            />
+          </div>
+          <ButtonGroup aria-label="submit or cancel" className="mt-3">
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+            >
+              Submit
+            </Button>{" "}
+            <Button variant="secondary" type="button" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </ButtonGroup>
+        </Form>
+      </Container>
     </Container>
   );
 };
