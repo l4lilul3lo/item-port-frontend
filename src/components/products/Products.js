@@ -37,7 +37,7 @@ const Products = () => {
   };
 
   const { isLoading, isError, data } = useQuery("getProducts", getProducts, {
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60, // one minute until refetch on mount.
   });
 
   if (isLoading) return <h1>Loading product data...</h1>;

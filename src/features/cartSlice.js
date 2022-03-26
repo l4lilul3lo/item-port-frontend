@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const keepZero = (int) => {
+  console.log(`keepZero starting num ${int}`);
   const fixed = parseFloat(int.toFixed(2));
-
+  console.log(`keepZero tofloat fixed ${fixed}`);
+  console.log(`fixed tostring ${fixed.toString().match(/[.].+/)}`);
   if (fixed.toString().match(/[.].+/)[0].length === 2) {
     return fixed + "0";
   }
@@ -32,7 +34,7 @@ const getPrice = (obj) => {
       return priceFloat * qty;
     })
     .reduce((a, b) => a + b);
-
+  console.log(`total ${total}`);
   return keepZero(total);
 };
 const initialState = {

@@ -12,8 +12,9 @@ const PublicNav = () => {
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container>
+      <Container fluid>
         <Navbar.Brand
+          className="d-flex"
           onClick={() => {
             navigate("/");
           }}

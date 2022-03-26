@@ -175,5 +175,3 @@ export default Cart;
     <Button variant="primary">Go somewhere</Button>
   </Card.Body>
 </Card>;
-
-// cart state should be updated when we increase quantity of an item. The quantity of the item being purchased should be included in the cart as an object with the amount

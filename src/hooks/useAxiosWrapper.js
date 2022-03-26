@@ -33,7 +33,6 @@ function useAxiosWrapper() {
         if (response.status === 401) {
           console.log("deauthorize");
           dispatch(deauthorize());
-          navigate("/");
         }
         console.log(`response ${JSON.stringify(response)}`);
         // otherwise we will return the data from the response. Whether that data is from an error or not.

@@ -1,7 +1,7 @@
 import { authorize, deauthorize } from "../features/userSlice";
 import { useDispatch } from "react-redux";
 import { axiosWrapper, useAxiosWrapper } from "./useAxiosWrapper";
-
+// not currently in use, probably not needed
 function useAuth() {
   const dispatch = useDispatch();
   const axiosWrapper = useAxiosWrapper();

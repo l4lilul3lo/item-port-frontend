@@ -1,6 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useProducts } from "../hooks/useProducts";
-import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../features/cartSlice";
@@ -28,7 +27,6 @@ const Product = () => {
 
   const product = data.data;
   const productInfo = product.info;
-  console.log(`FUCK ${JSON.stringify(data)}`);
   return (
     <Container className="d-flex flex-column justify-content-center align-items-center">
       <h1>{productInfo.title}</h1>
@@ -48,5 +46,3 @@ const Product = () => {
 };
 
 export default Product;
-
-// All requests made to the backend are done through react query.

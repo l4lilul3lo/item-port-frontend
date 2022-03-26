@@ -65,7 +65,7 @@ const Login = () => {
         </Form.Group>
         <Form.Text>{inputs.message}</Form.Text>
 
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" className="mt-3">
           Submit
         </Button>
       </Form>

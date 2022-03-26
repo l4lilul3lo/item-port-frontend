@@ -31,34 +31,41 @@ const PrivateNav = () => {
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container>
-        <Navbar.Brand>
+      <Container fluid>
+        <Navbar.Brand
+          className="d-flex justify-content-between w-75"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           <div id="name-logo" style={{ cursor: "pointer" }}>
             <h3>Item</h3>
             <i
               className="bi bi-phone-flip"
               style={{
+                cursor: "pointer",
                 fontSize: 30,
                 color: "blue",
-                marginLeft: "10px",
-                marginRight: "10px",
+                marginLeft: "5px",
+                marginRight: "5px",
               }}
             />
             <h3>Port</h3>
+          </div>
+          <div className="ml-3 d-flex">
+            <p>Hi {data.data.user.name}</p>
+            <img src={data.data.user.image} />
           </div>
         </Navbar.Brand>
         <Search />
         <NavCart />
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav>
+          <Nav style={{ marginLeft: "30px" }}>
             <Nav.Link onClick={() => navigate("/account")}>Account</Nav.Link>
             <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
           </Nav>
         </Navbar.Collapse>
-      </Container>
-      <Container>
-        <h1>hello</h1>
       </Container>
     </Navbar>
   );

@@ -4,13 +4,12 @@ import PasswordStrengthBar from "react-password-strength-bar";
 import { useRegistration } from "../hooks/useRegistration";
 import { Container, Form, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const registration = useRegistration();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  // create a listener here for an html string to be stored in state.
+
   const initialInputsState = {
     username: {
       value: "",
@@ -63,7 +62,6 @@ const Register = () => {
 
   const validateUserName = async () => {
     const username = inputs.username.value;
-    const isValid = inputs.username.isValid;
     const inputName = "username";
 
     if (username.length < 3 || username.length > 15) {
@@ -84,6 +82,12 @@ const Register = () => {
       invalidate(inputName, message);
       return;
     }
+
+    let usernameTaken = await registration.checkUsernameExists(username);
+    console.log(`istaken ${usernameTaken}`);
+    if (usernameTaken) {
+      invalidate(inputName, "Username taken");
+    }
   };
 
   const validateEmail = async () => {
@@ -97,36 +101,28 @@ const Register = () => {
       return;
     }
   };
-  // // lets think state
+  // hi ^__^
 
   const validatePassword = () => {
     const password = inputs.password.value;
+    const inputName = "password";
     console.log(password);
     if (password.length < 6) {
-      setInputs({
-        ...inputs,
-        password: {
-          isValid: false,
-          message: "Password must be at least 6 characters in length",
-          value: password,
-        },
-      });
+      const message = "Password must be at least 6 characters in length";
+      invalidate(inputName, message);
     }
   };
 
   const validatePassword2 = () => {
     const password = inputs.password.value;
     const password2 = inputs.password2.value;
+    const inputName = "password2";
     console.log(password);
     console.log(password2);
     if (password !== password2) {
-      setInputs({
-        ...inputs,
-        password2: {
-          isValid: false,
-          message: "Passwords do not match",
-        },
-      });
+      const message = "Passwords do not match";
+      invalidate(inputName);
+      invalidate(inputName, message);
     }
   };
 
@@ -160,7 +156,6 @@ const Register = () => {
     }
   };
 
-  // When the user navigates away from input, check for validation.
   const handleBlur = (e) => {
     if (e.target.value) {
       validate[e.target.name]();
@@ -188,9 +183,8 @@ const Register = () => {
     console.log(`register body ${JSON.stringify(body)}`);
 
     try {
-      // if all is good, send registration request.
-      const response = await registration.register(body);
-      console.log(response);
+      registration.register(body);
+
       setInputs(initialInputsState);
       if (verifyMethod === "on-site") {
         document.querySelector("#email-icon").style.display = "flex";
@@ -200,8 +194,6 @@ const Register = () => {
           behavior: "smooth",
         });
       }
-
-      // dispatch html to store. navigate to email page.
     } catch (error) {
       console.error(error);
     }
@@ -210,7 +202,13 @@ const Register = () => {
   return (
     <Container>
       <div id="email-icon-container">
-        <div id="email-icon" onClick={() => navigate("/email")}>
+        <div
+          id="email-icon"
+          onClick={() => {
+            navigate("/email");
+            toast.dismiss();
+          }}
+        >
           <h4> {"Verify your email address ->"}</h4>
 
           <i
@@ -340,9 +338,5 @@ const Register = () => {
     </Container>
   );
 };
-
-// if input passes validation, begin delayed database queries.
-
-// focusing on react-redux and
 
 export default Register;
